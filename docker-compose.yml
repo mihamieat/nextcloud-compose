@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: nextcloud_db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: examplepassword
+      POSTGRES_USER: nextclouduser
+      POSTGRES_DB: nextcloud
+    volumes:
+      - db:/var/lib/postgresql/data 
+
+  app:
+    image: nextcloud:latest
+    container_name: nextcloud_app
+    restart: always
+    ports:
+      - 8585:80
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - POSTGRES_PASSWORD=examplepassword
+      - POSTGRES_USER=nextclouduser
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+
+volumes:
+  nextcloud:
+  db:
